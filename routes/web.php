@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Http\Controllers\CategoriesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,19 +16,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-    
-});
+//   Route::get('/', function () {
+//     return view('welcome');
+//      });
 
-Route::get('/unicode', function(){
-    return view("home");
+// Route::get('/unicode', function(){
+//     return view('product');
+// });
+//  Route::put('/unicode', function(){
+//      return "Sytuan";
+//  });
+// Route::delete('/unicode', function(){
+//     return "Sytuan";
+// })
+//Route::match(['get','post'], 'unicode',function(){
+    //return $_SERVER['REQUEST_METHOD'];
+//});
+// Route::redirect('unicode','show-form')
+// Route::view('index','admin');
+// Route::prefix('admin')->group(function(){
+//     Route::get('unicode',function(){
+//         return '1';
+//     });
+//     Route::get('show',function(){
+//         return view('product');
+//     });
+// });
+// Client Route
+Route::prefix('categories')->group( function() {
+    //Danh sach chuyen muc
+    Route::get('/',[CategoriesController::class, 'index']);
 });
-
-
-Route::get('/sanpham', function(){
-    return view("product");
-});
-Route::get('/admin', function(){
-    return view("admin");
-});
+// Route::get('/layouts',function(){
+//     view('layouts/master');
+// });
