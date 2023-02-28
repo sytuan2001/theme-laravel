@@ -1,0 +1,1 @@
+<h1 style="text-align: center;">  lap trinh laravel </h1>
