@@ -43,10 +43,20 @@ use App\Http\Controllers\CategoriesController;
 //     });
 // });
 // Client Route
-Route::prefix('categories')->group( function() {
-    //Danh sach chuyen muc
-    Route::get('/',[CategoriesController::class, 'index']);
-});
+// Route::prefix('categories')->group( function() {
+//     //Danh sach chuyen muc
+//     Route::get('/',[CategoriesController::class, 'index']);
+// });
 // Route::get('/layouts',function(){
 //     view('layouts/master');
 // });
+Route::get('/login', function(){
+    return view('Login/login');
+
+});
+Route::get('/admin',function(){
+    return view('admin');
+});
+Route::get('/dashboard',function(){
+    return view('Dashboard.content');
+})->name('dashboard');
