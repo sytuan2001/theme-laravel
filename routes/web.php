@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\HomeController;
 
 
 /*
@@ -56,7 +56,62 @@ Route::get('/login', function(){
 });
 Route::get('/admin',function(){
     return view('admin');
+
 });
 Route::get('/dashboard',function(){
     return view('Dashboard.content');
+
 })->name('dashboard');
+Route::get('/something',function (){
+    return redirect('/admin');
+});
+Route::get('home',[
+    HomeController::class,
+    'index'
+
+]);
+// Route::get('category/{id}',function($id){
+//     return 'Category'.$id;
+// })-> where('id','[0-9]+'); 
+// Route::get('/admin/user',function(){
+//     return "/admin/user";
+// });
+
+// Route::get('/admin/slide',function(){
+//     return "/admin/slide";
+// });
+// Route::get('/admin/category',function(){
+//     return "/admin/category";
+// });
+$prefixAdmin="admin100";
+
+Route::prefix($prefixAdmin)->group(function () {
+    Route::get('/user', function () {
+        return "/admin/user";
+        // Matches The "/admin/users" URL
+    });
+    Route::get('/slide',function(){
+        return "/admin/slide";
+    });
+    Route::get('/category',function(){
+        return "/admin/category";
+    });
+});
+
+
+Route::get('users/{id}', function($id) {
+    //
+});
+
+Route::group(['prefix' => 'admin'], function() {
+    
+    Route::get('users/', function() {
+        return "123";
+        //
+    });
+    
+});
+
+Route::get('users/{id}', function($id) {
+    //
+});
