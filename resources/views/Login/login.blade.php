@@ -24,18 +24,21 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
 
-      <form action="../../index3.html" method="post">
-        {{--  <input type="hiden" name="_token" value="{{ csrf_token( )}}">  --}}
+      <form action="{{route('login_post')}}" method="post">
+          <input type="hidden" name="_token" value="{{ csrf_token( )}}">
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
+          <input type="email" class="form-control" name="email" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
+            @if($errors->has('email'))
+                <div class="error">{{ $errors->first('email') }}</div>
+            @endif
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" class="form-control" name="password" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>

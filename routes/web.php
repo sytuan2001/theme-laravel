@@ -23,7 +23,8 @@ Route::get('/admin', function () {
 Route::group(['middleware' => 'guest'], function() {
     Route::get('/login', function () {
         return view('Login/login');
-    });
+    })->name('login');
+    Route::post('/login', [LoginController::class,'authenticate'] )->name('login_post');
 });
 
 Route::group(['middleware' => 'auth'], function() {
@@ -39,15 +40,7 @@ Route::get('/something', function () {
 //     HomeController::class,
 //     'index'
 // ]);
-
-// Route::get('login', [
-//     LoginController::class,
-//     'login'
-// ]);
-
-//     //
-// ]);
-
 // Route::get('/login', 'LoginController@login');
 
-Route::get('/home', 'dashboard@content');
+//Route::get('/home', 'dashboard@content');
+
