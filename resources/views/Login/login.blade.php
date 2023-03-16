@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AdminLTE 3 | Log in</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -27,8 +27,8 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form action="{{ route('login_post') }}" method="post">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <form action="{{ route('login_post') }}" method="post" id="form-login">
+                    {{ csrf_field() }}
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" name="email" placeholder="Email">
                         <div class="input-group-append">
@@ -36,9 +36,8 @@
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
-                        @if ($errors->has('email'))
-                            <div class="error">{{ $errors->first('email') }}</div>
-                        @endif
+                        <div class="error error-email" style="display: none"></div>
+
                     </div>
                     <div class="input-group mb-3">
                         <input type="password" class="form-control" name="password" placeholder="Password">
@@ -47,6 +46,7 @@
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
+                        <div class="error error-password" style="display: none"></div>
                     </div>
                     <div class="row">
                         <div class="col-8">
@@ -59,7 +59,7 @@
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
                         </div>
                         <!-- /.col -->
                     </div>
@@ -94,6 +94,42 @@
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script type="text/javascript">
+
+
+        $(document).ready(function() {
+            $("#form-login").submit(function(e){
+                e.preventDefault();
+                $('.error').hide();
+                $('.error').text('');
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type:'POST',
+                    dataType: "json",
+                    data: $(this).serialize(),
+                    success: function(data) {
+                        if($.isEmptyObject(data.error)){
+                            window.location.replace(data.url);
+                        }else{
+                            printErrorMsg(data.error);
+                        }
+                    }
+
+                });
+
+            });
+
+
+            function printErrorMsg (msg) {
+                $.each( msg, function( key, value ) {
+                    $('.error-' + key).text(value[0]);
+                    $('.error-' + key).show();
+                });
+            }
+        });
+
+
+    </script>
 </body>
 
 </html>
