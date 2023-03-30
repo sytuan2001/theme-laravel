@@ -32,3 +32,4 @@ class LoginController extends Controller
         return response()->json(['error'=>$validator->messages()->get('*')]);
     }
 }
+

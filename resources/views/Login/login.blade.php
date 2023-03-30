@@ -114,10 +114,9 @@
                             printErrorMsg(data.error);
                         }
                     }
-
                 });
-
             });
+
 
 
             function printErrorMsg (msg) {
