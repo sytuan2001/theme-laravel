@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
 
-Route::get('/task', [TaskController::class, 'index']) ;
+Route::get('/task', [TaskController::class, 'index']) ->name('todo.app');
 Route::post('/todos', [TaskController::class, 'store']) ->name('todo.store');
 Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])-> name('todo.delete');
 Route::get('todo/index',[TaskController::class, 'index']) ->name('todo.index');

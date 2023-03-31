@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,6 +20,8 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        $pass = bcrypt('123123');
+//        Hash::make('123123');
         $credentials = ['email'=>$request->email, 'password'=>$request->password];
 
         if ($validator->passes()) {
