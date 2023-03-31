@@ -23,3 +23,13 @@ Route::group(['middleware' => 'auth'], function () {
     })->name('dashboard');
     Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
+
+Route::get('/task', [TaskController::class, 'index']) ;
+Route::post('/todos', [TaskController::class, 'store']) ->name('todo.store');
+Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])-> name('todo.delete');
+Route::get('todo/index',[TaskController::class, 'index']) ->name('todo.index');
+Route::get('todo/create',[TaskController::class, 'create']) ->name('todo.create');
+Route::delete('/selected',[TaskController::class,'deleteChecked'])->name('todo.deleteSelected');
+
+
+

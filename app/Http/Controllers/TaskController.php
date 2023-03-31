@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
@@ -30,7 +29,7 @@ class TaskController extends Controller
         ]);
 
         $data = $request->all();
-        $data['user_id'] = "user";
+        $data['user_id'] = "1";
 
         Task::create($data);
 
@@ -52,5 +51,10 @@ class TaskController extends Controller
         // redirect
         return redirect('/')->with('status', 'Task updated!');
     }
-
+    public function deleteChecked(Request $request)
+    {
+        $ids = $request->ids;
+        Task::whereIn('id',$ids)->delete();
+        return reponse()->json(['success'=>"Task delete!"]);
+    }
 }

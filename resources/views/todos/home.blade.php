@@ -22,10 +22,10 @@
                         <ul class="pagination">
                             <li class="page-item"><a class="page-link" href="#">
                                     <div class="checkbox">
-                                        <input class="form-check-input" type="checkbox" value="">
+                                        <input type="checkbox" value="" id="chkCheckAll">
                                     </div>
                                 </a></li>
-                            <li class="page-item"><a class="page-link" href="#"><svg
+                            <li class="page-item"><a class="page-link" href="#" id="deleteAllSelectedRecord"><svg
                                         xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                         <path
@@ -46,12 +46,11 @@
                     </nav>
                 </li>
                 @foreach ($tasks as $key => $item)
-                    <li class="list-group-item ourItem">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="">
+                    <li class="list-group-item ourItem" id="sid{{$item->id}}">
+                        <div class="form-check" >
+                            <input class="form-check-input" type="checkbox" value="{{$item->id}}" name="ids" >
                             <label class="form-check-label task-item" for="flexCheckIndeterminate">
-                                <h5 data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="label-text"
-                                                                                                data-id="{{ $item->id }}">{{ $item->title }}</span>
+                                <h5 data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="label-text" data-id="{{ $item->id }}">{{ $item->title }}</span>
                                 </h5>
                             </label>
                         </div>
@@ -74,7 +73,7 @@
                     <form action="{{ route('todo.create')}}" method="POST" id="form_create1">
                         <div class="modal-body">
                             <p>
-                                <input type="text" placeholder="Nhập ở đây" id="addItem" class="form-control">
+                                <input type="text" placeholder="Here" id="addItem" class="form-control">
                             </p>
                         </div>
                         <div class="modal-footer">
@@ -89,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal 2-->
+        <!-- Modal +++-->
         <div class="modal fade" id="exampleModalCreate" tabindex="-1" aria-labelledby="exampleModalLabelCreate"
              aria-hidden="true">
             <div class="modal-dialog">
@@ -153,6 +152,37 @@
                         }
                     });
                 });
+            });
+        </script>
+        <script>
+            $(function (e){
+                $("#chkCheckAll").click(function (){
+                    $(".form-check-input").prop('checked',$(this).prop('checked'));
+                });
+                $("#deleteAllSelectedRecord").click(function (e){
+                    e.preventDefault();
+                    var allids = [];
+
+                    $("input:checkbox[name=ids]:checked").each(function (){
+                        allids.push($(this).val());
+                    });
+
+                    $.ajax({
+                        url:"{{route('todo.deleteSelected')}}",
+                        type:"DELETE",
+                        data:{
+                            _token:$("input[name=_token]").val(),
+                            ids:allids
+                        },
+                        success:function (response){
+                            $.each(allids,function (key,val){
+                                $("#sid"+val).remove();
+                            })
+                        }
+
+
+                    });
+                })
             });
         </script>
 </body>
