@@ -30,6 +30,7 @@ Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])-> name('todo.de
 Route::get('todo/index',[TaskController::class, 'index']) ->name('todo.index');
 Route::get('todo/create',[TaskController::class, 'create']) ->name('todo.create');
 Route::delete('/selected',[TaskController::class,'deleteChecked'])->name('todo.deleteSelected');
+Route::put('/task/{id}',[TaskController::class,'update'])->name('todo.update');
 
 
 

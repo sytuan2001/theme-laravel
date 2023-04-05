@@ -280,6 +280,12 @@
                             <p>jsGrid</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route("todos.home") }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Todo list</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-header">EXAMPLES</li>
