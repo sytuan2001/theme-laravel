@@ -11,48 +11,46 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::all();
-        return view('todos/home', compact('tasks'));
+        $tasks = Task::where('user_id', auth()->id())->get();
+        return view('tasks.index', compact('tasks'));
     }
 
 
-    public function create(Request $request)
+    public function create()
     {
-        $title = new Task();
-        $title->title = $request->text;
-        $title->save();
-        return 'Done'();
+        return view('tasks.create');
     }
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:200'
-        ]);
-
-        $data = $request->all();
-        $data['user_id'] = Auth::user();
-
-        Task::create($data);
-
-        return ['status'=>200];
-
+        $task = new Task();
+        $task->user_id = auth()->user()->id;
+        $task->title = $request->input('title');
+        $task->description = $request->input('description');
+        $task->status = 0;
+        $task->save();
+        return response()->json(['success'=>'Task created successfully']);
     }
+
     public function update(Request $request, $id)
     {
-        // validate the form
-        $request->validate([
-            'task' => 'required|max:200'
-        ]);
-
-        // update the data
-//        DB::table('tasks')->where('id', $id)->update([
-//            'task' => $request->task
-//        ]);
-        Task::where('id', $id)->update(['task' => $request->task]);
-//        Task::query()->where()->orWhere()...
-
-        // redirect
-        return redirect('/')->with('status', 'Task updated!');
+        $task = Task::find($id);
+        if (!$task) {
+            return response()->json(['error'=>'Task not found']);
+        }
+        $task->title = $request->input('title');
+        $task->description = $request->input('description');
+        $task->status = $request->input('status');
+        $task->save();
+        return response()->json(['success'=>'Task updated successfully']);
+    }
+    public function destroy($id)
+    {
+        $task = Task::find($id);
+        if (!$task) {
+            return response()->json(['error'=>'Task not found']);
+        }
+        $task->delete();
+        return response()->json(['success'=>'Task deleted successfully']);
     }
     public function deleteChecked(Request $request)
     {

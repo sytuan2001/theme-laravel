@@ -60,7 +60,7 @@
         </div>
     </div>
 
-        <!-- Modal 1-->
+        <!-- Modal text-->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
@@ -70,7 +70,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('todo.create')}}" method="POST" id="form_create1">
+                    <form action="#" method="POST" id="form_create1">
                         <div class="modal-body">
                             <p>
                                 <input type="text" placeholder="Here" id="addItem" class="form-control">
@@ -110,9 +110,9 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                     style="display: none">Close</button>
-                            <button type="submit" class="btn btn-primary" id="addTask">Add Task</button>
+                            <button id="addTaskButton" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
+                            <button type="button" class="btn btn-primary" id="saveTaskButton">Save Changes</button>
                             {{ csrf_field() }}
-                            {{--  <button type="button" class="btn btn-primary" id="saveChanges">Save Changes</button>  --}}
                         </div>
                     </form>
 
@@ -154,6 +154,7 @@
                 });
             });
         </script>
+
         <script>
             $(function (e){
                 $("#chkCheckAll").click(function (){
@@ -179,12 +180,22 @@
                                 $("#sid"+val).remove();
                             })
                         }
-
-
                     });
                 })
             });
         </script>
+    <script>
+        $.ajax({
+            url: '/tasks',
+            method: 'GET',
+            success: function(response) {
+
+            },
+            error: function(xhr, status, error) {
+
+            }
+        });
+    </script>
 </div>
 </body>
 

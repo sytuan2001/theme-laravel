@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->bigInteger('user_id');
+            $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->text('description');
-            $table->boolean('status')->default(false);
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -28,4 +29,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('tasks');
     }
+
 };
