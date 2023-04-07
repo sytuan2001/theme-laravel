@@ -1,83 +1,71 @@
-@extends('layouts.layout')
-
-@section('content')
-    <div class="container">
-        <h1>Todo List</h1>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
-        <form id="delete-form" action="{{ route('tasks.delete') }}" method="POST">
-            @csrf
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Title</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($tasks as $task)
-                    <tr>
-                        <td><input type="checkbox" name="task[]" value="{{ $task->id }}"></td>
-                        <td>{{ $task->title }}</td>
-                        <td><a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary">Edit</a></td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-            <button type="submit" class="btn btn-danger">Delete Selected</button>
-        </form>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('tasks.store') }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label for="title">Title</label>
-                            <input type="text" name="title" class="form-control" id="title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea name="description" class="form-control" id="description"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="completed">Completed</label>
-                            <input type="checkbox" name="completed" class="form-control" id="completed">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Task</button>
-                    </form>
-                </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo List</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Todo List</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="input-group">
+					<span class="input-group-addon">
+						<input type="checkbox">
+					</span>
+                <input type="text" class="form-control" placeholder="Task 1">
             </div>
+        </div>
+        <div class="col-md-6">
+            <button type="button" class="btn btn-default" aria-label="Left Align">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-default" aria-label="Left Align">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addTaskModal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#addTaskForm').submit(function(event) {
-                event.preventDefault(); // Prevent default form submission
-                var formData = $(this).serialize(); // Serialize form data
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("tasks.store") }}',
-                    data: formData,
-                    success: function(data) {
-                        $('#addTaskModal').modal('hide'); // Hide the modal
-                        $('#tasksTable').append(data); // Append the new task to the table
-                        toastr.success('Task added successfully.'); // Show success message
-                    },
-                    error: function(data) {
-                        toastr.error('Error adding task.'); // Show error message
-                    }
-                });
-            });
-        });
-    </script>
+    <!-- Modal-->
+    <div class="modal fade" id="exampleModalCreate" tabindex="-1" aria-labelledby="exampleModalLabelCreate"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('tasks.store')}}" method="POST" id="form_create">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add new Task</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <input type="text" placeholder="Nhập ở đây" id="addItem" name="title" class="form-control">
+                        </p>
+                        <div>
+                            <textarea name="description" class="form-group" cols="60" rows="10" placeholder="Mô tả"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                style="display: none">Close</button>
+                        <button id="addTaskButton" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
+                        <button type="button" class="btn btn-primary" id="saveTaskButton">Save Changes</button>
+                        {{ csrf_field() }}
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+<!--
