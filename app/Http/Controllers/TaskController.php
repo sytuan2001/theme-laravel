@@ -28,35 +28,48 @@ class TaskController extends Controller
         $task->description = $request->input('description');
         $task->status = 0;
         $task->save();
-        return response()->json(['success'=>'Task created successfully']);
+        return response()->json(['success' => 'Task created successfully']);
     }
 
     public function update(Request $request, $id)
     {
         $task = Task::find($id);
         if (!$task) {
-            return response()->json(['error'=>'Task not found']);
+            return response()->json(['error' => 'Task not found']);
         }
         $task->title = $request->input('title');
         $task->description = $request->input('description');
         $task->status = $request->input('status');
         $task->save();
-        return response()->json(['success'=>'Task updated successfully']);
+        return response()->json(['success' => 'Task updated successfully']);
     }
     public function destroy($id)
     {
         $task = Task::find($id);
         if (!$task) {
-            return response()->json(['error'=>'Task not found']);
+            return response()->json(['error' => 'Task not found']);
         }
         $task->delete();
-        return response()->json(['success'=>'Task deleted successfully']);
+        return response()->json(['success' => 'Task deleted successfully']);
     }
     public function deleteChecked(Request $request)
     {
         $ids = $request->ids;
-        Task::whereIn('id',$ids)->delete();
-        return reponse()->json(['success'=>"Task delete!"]);
+        Task::whereIn('id', $ids)->delete();
+        return response()->json(['success' => "Task delete!"]);
     }
-
+    public function updateStatus(Request $request)
+    {
+        $taskIds = $request->input('task_id');
+        if (!empty($taskIds)) {
+            foreach ($taskIds as $taskId) {
+                $task = Task::find($taskId);
+                if ($task) {
+                    $task->status = 1;
+                    $task->save();
+                }
+            }
+        }
+        return response()->json(['success' => 'Status updated successfully.']);
+    }
 }

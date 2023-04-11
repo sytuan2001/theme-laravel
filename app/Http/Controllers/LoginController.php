@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -21,18 +18,28 @@ class LoginController extends Controller
         ]);
 
         $pass = bcrypt('123123');
-//        Hash::make('123123');
-        $credentials = ['email'=>$request->email, 'password'=>$request->password];
+        //  Hash::make('123123');
+        $credentials = ['email' => $request->email, 'password' => $request->password];
 
         if ($validator->passes()) {
             if (Auth::attempt($credentials)) {
                 $request->session()->regenerate();
-                return response()->json(['success'=>'Login Succcess.', 'url'=>route('dashboard')]);
+
+                return response()->json([
+                    'success' => 'Login Succcess.',
+                    'url' => route('dashboard')
+                ]);
             } else {
-                return response()->json(['error'=> ['email'=>['The provided credentials do not match our records']]]);
+                return response()->json([
+                    'error' => [
+                        'email' => ['The provided credentials do not match our records']
+                    ]
+                ]);
             }
         }
-        return response()->json(['error'=>$validator->messages()->get('*')]);
+
+        return response()->json([
+            'error' => $validator->messages()->get('*')
+        ]);
     }
 }
-
