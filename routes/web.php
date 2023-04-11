@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
 
-Route::get('/tasks', [TaskController::class, 'index']) ->name('tasks.index');
+Route::get('/tasks', [TaskController::class, 'index']) ->name('todos.home');
 Route::post('/tasks', [TaskController::class, 'store']) ->name('tasks.store');
 Route::get('/tasks/create',[TaskController::class, 'create']) ->name('tasks.create');
 Route::delete('/selected',[TaskController::class,'deleteChecked'])->name('tasks.deleteSelected');
