@@ -4,22 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
     public function index()
     {
         $tasks = Task::where('user_id', auth()->id())->get();
+
         return view('todos.home', compact('tasks'));
     }
-
 
     public function create()
     {
         return view('tasks.create');
     }
+
     public function store(Request $request)
     {
         $task = new Task();
@@ -28,6 +27,7 @@ class TaskController extends Controller
         $task->description = $request->input('description');
         $task->status = 0;
         $task->save();
+
         return response()->json(['success' => 'Task created successfully']);
     }
 
@@ -41,8 +41,10 @@ class TaskController extends Controller
         $task->description = $request->input('description');
         $task->status = $request->input('status');
         $task->save();
+
         return response()->json(['success' => 'Task updated successfully']);
     }
+
     public function destroy($id)
     {
         $task = Task::find($id);
@@ -50,14 +52,19 @@ class TaskController extends Controller
             return response()->json(['error' => 'Task not found']);
         }
         $task->delete();
+
+
         return response()->json(['success' => 'Task deleted successfully']);
     }
+
     public function deleteChecked(Request $request)
     {
         $ids = $request->ids;
         Task::whereIn('id', $ids)->delete();
+
         return response()->json(['success' => "Task delete!"]);
     }
+    
     public function updateStatus(Request $request)
     {
         $taskIds = $request->input('task_id');
@@ -70,6 +77,7 @@ class TaskController extends Controller
                 }
             }
         }
+
         return response()->json(['success' => 'Status updated successfully.']);
     }
 }
