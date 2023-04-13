@@ -60,8 +60,11 @@
 
         <!-- Content Wrapper. Contains page content -->
         @yield('content')
+        <!-- Todo App -->
+        @yield('home')
 
         <!-- /.content-wrapper -->
+
         @include('components.footer')
 
         <!-- Control Sidebar -->
