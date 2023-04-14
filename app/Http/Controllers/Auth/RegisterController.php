@@ -15,20 +15,29 @@ class RegisterController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    public function showRegistrationForm()
+    {
+        return view('Resgiter.register');
+    }
+
     public function register(Request $request)
     {
+        // Validate input
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users|max:255',
-            'password' => 'required|string|min:8|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
-        $user = new User();
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
-        $user->save();
+        // Create user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-        return redirect()->route('login')->with('success', 'Bạn đã đăng ký thành công!');
+        Auth::login($user);
+
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
     }
 }

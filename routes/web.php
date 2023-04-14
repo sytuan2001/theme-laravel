@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/admin', function () {
     return view('admin');
 });
-
+Route::get('/register', function() {
+    return view('register');
+});
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', function () {
         return view('Login/login');
@@ -38,4 +40,7 @@ Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update
 //Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
 //Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-Route::post('/register', [RegisterController::class,'register'])->name('register');
+Route::get('/register', [RegisterController::class,'showRegistrationForm'])->name('register1');
+Route::post('/register', 'Auth\RegisterController@register')->name('register');
+
+

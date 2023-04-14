@@ -299,6 +299,15 @@
                 </a>
             </li>
             <li class="nav-item">
+            <a href="" class="nav-link">
+                    <i class="nav-icon far fa-calendar-alt"></i>
+                    <p>
+                        Todolist
+                        <span class="badge badge-info right">2</span>
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="pages/gallery.html" class="nav-link">
                     <i class="nav-icon far fa-image"></i>
                     <p>
