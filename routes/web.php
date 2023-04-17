@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/admin', function () {
     return view('admin');
 });
-Route::get('/register', function() {
+Route::get('/register', function () {
     return view('register');
 });
 Route::group(['middleware' => 'guest'], function () {
@@ -30,17 +30,17 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('logout');
 });
 
-Route::get('/tasks', [TaskController::class, 'index'])->name('todos.home');
-Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
-Route::delete('/selected', [TaskController::class, 'deleteChecked'])->name('tasks.deleteSelected');
-Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/tasks', [TaskController::class, 'index'])->name('todos.home');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+    Route::delete('/selected', [TaskController::class, 'deleteChecked'])->name('tasks.deleteSelected');
+    Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::delete('/tasks/{task}/destroy', [TaskController::class, 'destroy'])->name('tasks.destroy');
+});
 
-//Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-//Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-//Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-Route::get('/register', [RegisterController::class,'showRegistrationForm'])->name('register1');
-Route::post('/register', 'Auth\RegisterController@register')->name('register');
-
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.show_form');
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
 

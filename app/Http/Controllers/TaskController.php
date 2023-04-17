@@ -9,14 +9,18 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::where('user_id', auth()->id())->get();
+        $tasks = Task::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('todos.home', compact('tasks'));
     }
 
     public function create()
     {
-        return view('tasks.create');
+        return view('tasks.create', [
+            'task' => new Task()
+        ]);
     }
 
     public function store(Request $request)
@@ -28,7 +32,8 @@ class TaskController extends Controller
         $task->status = 0;
         $task->save();
 
-        return response()->json(['success' => 'Task created successfully']);
+        $tasks = Task::where('user_id', auth()->id())->get();
+        return view('todos.home', compact('tasks'))->with('success', 'Task created successfully');
     }
 
     public function update(Request $request, $id)
@@ -64,7 +69,7 @@ class TaskController extends Controller
 
         return response()->json(['success' => "Task delete!"]);
     }
-    
+
     public function updateStatus(Request $request)
     {
         $taskIds = $request->input('task_id');

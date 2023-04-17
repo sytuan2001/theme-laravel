@@ -65,7 +65,7 @@
 
         <!-- /.content-wrapper -->
 
-        @include('components.footer')
+        
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
