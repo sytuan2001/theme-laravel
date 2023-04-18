@@ -3,7 +3,7 @@
 @section('home')
 <div class="container">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-8 mx-auto">
             <ul class="list-group">
                 <li class="list-group-item" id="addNew">Todo list</li>
                 <li class="list-group-item">
@@ -46,96 +46,94 @@
         </div>
     </div>
     <!-- Modal +++-->
+    <!-- Modal + -->
     <div class="modal fade" id="exampleModalCreate" tabindex="-1" aria-labelledby="exampleModalLabelCreate" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add new Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
                 <form action="{{ route('tasks.store') }}" method="POST" id="form_create">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add new Task</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
                     <div class="modal-body">
-                        <p>
-                            <input type="text" placeholder="Nhập ở đây" id="addItem" name="title" class="form-control">
-                        </p>
-                        <div>
-                            <textarea name="description" class="form-group" cols="40" rows="10" placeholder="Mô tả"></textarea>
+                        <div class="mb-3">
+                            <label for="addItem" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="addItem" name="title" placeholder="Enter task title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="addDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="addDescription" name="description" rows="3" placeholder="Enter task description"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="addTaskButton" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="addTaskButton" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Save changes</button>
                         {{ csrf_field() }}
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('.task-item').click(function() {
-                var text = $(this).find('.label-text').text();
-                $('#exampleModalLabel').text('Edit Item');
-                $('#addItem').val(text);
-                $('#addTask').hide('400');
-                var id = $(this).find('.label-text').data('id');
-                console.log(text);
-            });
 
-            $('#form_create').submit(function(event) {
-                event.preventDefault();
-                var submitBtn = $(this).find('button[type=submit]');
-                submitBtn.prop('disabled', true)
-                var dataCreate = $(this).serialize();
-                $.ajax({
-                    type: "POST",
-                    url: $(this).attr("action"),
-                    data: dataCreate,
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log(data);
-                        $('#exampleModalCreate').modal('hide');
-                        loadTasks();
-                    },
-                    complete: function() {
-                        submitBtn.prop('disabled', false);
-                    }
-                });
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
+</script>
+<script>
+    $(document).ready(function() {
+        $('#saveChangesButton').click(function(e) {
+            e.preventDefault();
+
+            var title = $('#titleInput').val();
+            var description = $('#descriptionInput').val();
+
+            $.ajax({
+                url: '/tasks',
+                type: 'POST',
+                data: {
+                    title: title,
+                    description: description
+                },
+                success: function(response) {
+                    $('#exampleModal').modal('hide');
+                    $.get('/tasks', function(data) {
+                        $('#tasksTable').html(data);
+                    });
+                },
+                error: function(xhr, status, error) {}
             });
         });
-    </script>
+    });
+</script>
 
-    <script>
-        $(function(e) {
-            $("#chkCheckAll").click(function() {
-                $(".form-check-input").prop('checked', $(this).prop('checked'));
-            });
-            $("#deleteAllSelectedRecord").click(function(e) {
-                e.preventDefault();
-                var allIds = [];
-
-                $("input:checkbox[name=ids]:checked").each(function() {
-                    allIds.push($(this).val());
-                });
-
-                $.ajax({
-                    url: "{{ route('tasks.deleteSelected') }}",
-                    type: "DELETE",
-                    data: {
-                        _token: $("input[name=_token]").val(),
-                        ids: allIds
-                    },
-                    success: function(response) {
-                        $.each(allIds, function(key, val) {
-                            $("#sid" + val).remove();
-                        })
-                    }
-                });
-            })
+<script>
+    $(function(e) {
+        $("#chkCheckAll").click(function() {
+            $(".form-check-input").prop('checked', $(this).prop('checked'));
         });
-    </script>
+        $("#deleteAllSelectedRecord").click(function(e) {
+            e.preventDefault();
+            var allIds = [];
+
+            $("input:checkbox[name=ids]:checked").each(function() {
+                allIds.push($(this).val());
+            });
+
+            $.ajax({
+                url: "{{ route('tasks.deleteSelected') }}",
+                type: "DELETE",
+                data: {
+                    _token: $("input[name=_token]").val(),
+                    ids: allIds
+                },
+                success: function(response) {
+                    $.each(allIds, function(key, val) {
+                        $("#sid" + val).remove();
+                    })
+                }
+            });
+        })
+    });
+</script>
 </div>
 @endsection

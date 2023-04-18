@@ -32,7 +32,9 @@ class TaskController extends Controller
         $task->status = 0;
         $task->save();
 
-        $tasks = Task::where('user_id', auth()->id())->get();
+        $tasks = Task::where('user_id', auth()->id())
+            ->orderByDesc('created_at')
+            ->get();
         return view('todos.home', compact('tasks'))->with('success', 'Task created successfully');
     }
 
