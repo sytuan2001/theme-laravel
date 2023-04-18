@@ -40,7 +40,7 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
-        $task = Task::find($id);
+        $task = Task::findorFail($id);
         if (!$task) {
             return response()->json(['error' => 'Task not found']);
         }
@@ -49,6 +49,7 @@ class TaskController extends Controller
         $task->status = $request->input('status');
         $task->save();
 
+        $task = Task::find($id);
         return response()->json(['success' => 'Task updated successfully']);
     }
 

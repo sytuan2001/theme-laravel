@@ -33,20 +33,39 @@
                 @foreach ($tasks as $task)
                 <li class="list-group-item ourItem" id="sid{{ $task->id }}">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="{{ $task->id }}" name="ids">
-                        <label class="form-check-label task-item" for="flexCheckIndeterminate">
-                            <h5 data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="label-text" data-id="{{ $task->id }}">{{ $task->title }}</span>-
-                                <span class="task-description">{{ $task->description }}</span>
-                            </h5>
+                        <input class="form-check-input task-check" type="checkbox" value="{{ $task->id }}" name="ids" @if($task->status) checked @endif>
+                        <label class="form-check-label @if($task->status) task-done @endif" for="flexCheckIndeterminate">
+                            <h5><span class="label-text @if($task->status) task-done-text @endif" data-id="{{ $task->id }}"><strong>{{ $task->title }}</strong></span>
+                                - <span class="task-description @if($task->status) task-done-text @endif">{{ Str::limit($task->description, 50) }}</span></h5>
                         </label>
                     </div>
                 </li>
                 @endforeach
+
             </ul>
         </div>
     </div>
-    <!-- Modal +++-->
-    <!-- Modal + -->
+    <!-- Modal nội dung -->
+    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModalLabel">Task Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="taskModalTitle"></h5>
+                    <p id="taskModalDescription"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal +++ -->
     <div class="modal fade" id="exampleModalCreate" tabindex="-1" aria-labelledby="exampleModalLabelCreate" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -133,6 +152,49 @@
                 }
             });
         })
+    });
+</script>
+<script>
+    $(document).on('change', '.task-check', function() {
+        var id = $(this).val();
+        $.ajax({
+            url: '/tasks/' + id + '/toggle',
+            type: 'PUT',
+            success: function(response) {
+
+                $('#exampleModal').modal('hide');
+                $('#tasksTable').load('/tasks');
+
+                var task = response.task;
+                var taskElem = $('#sid' + task.id);
+                var labelElem = taskElem.find('.label-text');
+                var descElem = taskElem.find('.task-description');
+
+                labelElem.text(task.title);
+                descElem.text(task.description);
+
+                if (task.status == 1) {
+                    labelElem.css('text-decoration', 'line-through');
+                } else {
+                    labelElem.css('text-decoration', 'none');
+                }
+            },
+
+            error: function(xhr, status, error) {}
+        });
+    });
+</script>
+<script>
+  $(document).ready(function() {
+        $('.label-text').on('click', function() {
+            var title = $(this).text();
+            var description = $(this).siblings('.task-description').text();
+
+            $('#taskModalTitle').text(title);
+            $('#taskModalDescription').text(description);
+
+            $('#taskModal').modal('show');
+        });
     });
 </script>
 </div>
