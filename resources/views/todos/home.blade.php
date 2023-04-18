@@ -63,9 +63,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none">Close</button>
                         <button id="addTaskButton" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
-                        <button type="button" class="btn btn-primary" id="saveTaskButton">Save Changes</button>
                         {{ csrf_field() }}
                     </div>
                 </form>
@@ -89,6 +87,8 @@
 
             $('#form_create').submit(function(event) {
                 event.preventDefault();
+                var submitBtn = $(this).find('button[type=submit]');
+                submitBtn.prop('disabled', true)
                 var dataCreate = $(this).serialize();
                 $.ajax({
                     type: "POST",
@@ -97,6 +97,11 @@
                     dataType: 'json',
                     success: function(data) {
                         console.log(data);
+                        $('#exampleModalCreate').modal('hide');
+                        loadTasks();
+                    },
+                    complete: function() {
+                        submitBtn.prop('disabled', false);
                     }
                 });
             });
