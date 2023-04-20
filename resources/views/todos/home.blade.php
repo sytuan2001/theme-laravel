@@ -41,7 +41,6 @@
                     </div>
                 </li>
                 @endforeach
-
             </ul>
         </div>
     </div>
@@ -73,15 +72,15 @@
                     <h5 class="modal-title" id="exampleModalLabel">Add new Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('tasks.store') }}" method="POST" id="form_create">
+                <form action="{{ route('tasks.store') }}" method="POST" id="form_create" class="was-validated">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="addItem" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="addItem" name="title" placeholder="Enter task title">
+                            <input type="text" class="form-control" id="addItem" name="title" placeholder="Enter task title" required>
                         </div>
                         <div class="mb-3">
                             <label for="addDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="addDescription" name="description" rows="3" placeholder="Enter task description"></textarea>
+                            <textarea class="form-control" id="addDescription" name="description" rows="3" placeholder="Enter task description" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -93,6 +92,16 @@
             </div>
         </div>
     </div>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
 
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
@@ -157,11 +166,14 @@
 <script>
     $(document).on('change', '.task-check', function() {
         var id = $(this).val();
+        var status = $(this).is(":checked") ? 1 : 0; 
         $.ajax({
             url: '/tasks/' + id + '/toggle',
             type: 'PUT',
+            data: {
+                status: status 
+            },
             success: function(response) {
-
                 $('#exampleModal').modal('hide');
                 $('#tasksTable').load('/tasks');
 
@@ -172,7 +184,6 @@
 
                 labelElem.text(task.title);
                 descElem.text(task.description);
-
                 if (task.status == 1) {
                     labelElem.css('text-decoration', 'line-through');
                 } else {
@@ -185,7 +196,7 @@
     });
 </script>
 <script>
-  $(document).ready(function() {
+    $(document).ready(function() {
         $('.label-text').on('click', function() {
             var title = $(this).text();
             var description = $(this).siblings('.task-description').text();
@@ -194,7 +205,13 @@
             $('#taskModalDescription').text(description);
 
             $('#taskModal').modal('show');
+
         });
+
+        $('.modal-footer button[data-dismiss="modal"]').on('click', function() {
+            $('#taskModal').modal('hide');
+        });
+
     });
 </script>
 </div>

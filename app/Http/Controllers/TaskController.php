@@ -36,6 +36,10 @@ class TaskController extends Controller
             ->orderByDesc('created_at')
             ->get();
         return view('todos.home', compact('tasks'))->with('success', 'Task created successfully');
+        return redirect()->back()->withErrors([
+            'error' => 'Please enter both title and description'
+        ]);
+        
     }
 
     public function update(Request $request, $id)
