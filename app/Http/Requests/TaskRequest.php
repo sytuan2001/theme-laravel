@@ -11,7 +11,7 @@ class TaskRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,6 +24,14 @@ class TaskRequest extends FormRequest
         return [
             'title' => 'required',
             'description' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title.required' => 'Vui lòng nhập tiêu đề.',
+            'description.required' => 'Vui lòng nhập nội dung.',
         ];
     }
 }

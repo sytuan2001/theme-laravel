@@ -72,15 +72,21 @@
                     <h5 class="modal-title" id="exampleModalLabel">Add new Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('tasks.store') }}" method="POST" id="form_create" class="was-validated">
+                <form action="{{ route('tasks.store') }}" method="POST" id="form_create">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="addItem" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="addItem" name="title" placeholder="Enter task title" required>
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="addItem" name="title" placeholder="Nhập tiêu đề">
+                            @error('title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label for="addDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="addDescription" name="description" rows="3" placeholder="Enter task description" required></textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="addDescription" name="description" rows="3" placeholder="Nhập nội dung"></textarea>
+                            @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -89,18 +95,16 @@
                         {{ csrf_field() }}
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
     </div>
     @endif
+
 
 
 </div>
@@ -166,12 +170,12 @@
 <script>
     $(document).on('change', '.task-check', function() {
         var id = $(this).val();
-        var status = $(this).is(":checked") ? 1 : 0; 
+        var status = $(this).is(":checked") ? 1 : 0;
         $.ajax({
             url: '/tasks/' + id + '/toggle',
             type: 'PUT',
             data: {
-                status: status 
+                status: status
             },
             success: function(response) {
                 $('#exampleModal').modal('hide');
@@ -211,7 +215,6 @@
         $('.modal-footer button[data-dismiss="modal"]').on('click', function() {
             $('#taskModal').modal('hide');
         });
-
     });
 </script>
 </div>

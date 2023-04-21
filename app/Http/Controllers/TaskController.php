@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Http\Requests\TaskRequest;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -23,24 +24,24 @@ class TaskController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
+        $validatedData = $request->validated();
+
         $task = new Task();
         $task->user_id = auth()->user()->id;
-        $task->title = $request->input('title');
-        $task->description = $request->input('description');
+        $task->title = $validatedData['title'];
+        $task->description = $validatedData['description'];
         $task->status = 0;
         $task->save();
 
         $tasks = Task::where('user_id', auth()->id())
             ->orderByDesc('created_at')
             ->get();
-        return view('todos.home', compact('tasks'))->with('success', 'Task created successfully');
-        return redirect()->back()->withErrors([
-            'error' => 'Please enter both title and description'
-        ]);
-        
+
+        return redirect()->back(); 
     }
+
 
     public function update(Request $request, $id)
     {
