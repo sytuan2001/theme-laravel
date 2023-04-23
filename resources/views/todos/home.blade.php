@@ -76,17 +76,16 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="addItem" class="form-label">Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="addItem" name="title" placeholder="Nhập tiêu đề">
-                            @error('title')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title_add" name="title" placeholder="Nhập tiêu đề">
+                            <div class="invalid-feedback hidden"></div>
+
                         </div>
                         <div class="mb-3">
                             <label for="addDescription" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="addDescription" name="description" rows="3" placeholder="Nhập nội dung"></textarea>
-                            @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description_add" name="description" rows="3" placeholder="Nhập nội dung"></textarea>
+
+                            <div class="invalid-feedback hidden"></div>
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -104,39 +103,48 @@
         {{ session('success') }}
     </div>
     @endif
-
-
-
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
 </script>
 <script>
     $(document).ready(function() {
-        $('#saveChangesButton').click(function(e) {
+        $('#form_create').submit(function(e) {
             e.preventDefault();
-
-            var title = $('#titleInput').val();
-            var description = $('#descriptionInput').val();
-
+            var that = $(this);
+            var title = $('#title_add').val();
+            var description = $('#description_add').val();
+            $('.invalid-feedback').hide();
+            $('.invalid-feedback').html('');
             $.ajax({
-                url: '/tasks',
-                type: 'POST',
-                data: {
-                    title: title,
-                    description: description
-                },
+                url: that.attr('action'),
+                type: that.attr('method'),
+                dataType: "json",
+                data: that.serialize(),
                 success: function(response) {
-                    $('#exampleModal').modal('hide');
+                    $('#exampleModalCreate').modal('hide');
+                    $('#form_create').trigger("reset");
                     $.get('/tasks', function(data) {
                         $('#tasksTable').html(data);
                     });
                 },
-                error: function(xhr, status, error) {}
+
+                error: function(xhr, status, error) {
+                    $.each(xhr.responseJSON.errors, function(index, value) {
+                        $('#' + index + '_add').next().html(value);
+                        $('#' + index + '_add').next().show();
+                    });
+                }
+            }).done(function() {
+                $.get('/tasks', function(data) {
+                    $('#tasksTable').html(data);
+                });
             });
+
         });
     });
 </script>
+
 
 <script>
     $(function(e) {
@@ -216,6 +224,14 @@
             $('#taskModal').modal('hide');
         });
     });
+</script>
+<script>
+    $(document).ready(function() {
+    $('#addTaskButton').click(function() {
+        location.reload();
+    });
+});
+
 </script>
 </div>
 @endsection
