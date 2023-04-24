@@ -176,34 +176,30 @@
     });
 </script>
 <script>
-    $(document).on('change', '.task-check', function() {
-        var id = $(this).val();
-        var status = $(this).is(":checked") ? 1 : 0;
-        $.ajax({
-            url: '/tasks/' + id + '/toggle',
-            type: 'PUT',
-            data: {
-                status: status
-            },
-            success: function(response) {
-                $('#exampleModal').modal('hide');
-                $('#tasksTable').load('/tasks');
-
-                var task = response.task;
-                var taskElem = $('#sid' + task.id);
-                var labelElem = taskElem.find('.label-text');
-                var descElem = taskElem.find('.task-description');
-
-                labelElem.text(task.title);
-                descElem.text(task.description);
-                if (task.status == 1) {
-                    labelElem.css('text-decoration', 'line-through');
-                } else {
-                    labelElem.css('text-decoration', 'none');
+    $(document).ready(function() {
+        $('.task-check').on('click', function() {
+            var taskId = $(this).val();
+            var isChecked = $(this).is(':checked');
+            $.ajax({
+                url: '/tasks/update-status',
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'task_id': taskId,
+                    'status': isChecked ? 1 : 0
+                },
+                success: function(data) {
+                    // Cập nhật trạng thái của Task trên giao diện
+                    var taskItem = $('#sid' + taskId);
+                    if (isChecked) {
+                        taskItem.find('.label-text').addClass('task-done-text');
+                        taskItem.find('.task-description').addClass('task-done-text');
+                    } else {
+                        taskItem.find('.label-text').removeClass('task-done-text');
+                        taskItem.find('.task-description').removeClass('task-done-text');
+                    }
                 }
-            },
-
-            error: function(xhr, status, error) {}
+            });
         });
     });
 </script>
@@ -227,11 +223,10 @@
 </script>
 <script>
     $(document).ready(function() {
-    $('#addTaskButton').click(function() {
-        location.reload();
+        $('#addTaskButton').click(function() {
+            location.reload();
+        });
     });
-});
-
 </script>
 </div>
 @endsection

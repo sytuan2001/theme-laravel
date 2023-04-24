@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use App\Http\Requests\TaskRequest;
+use App\Http\Requests\CreateTaskRequest;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -24,14 +24,11 @@ class TaskController extends Controller
         ]);
     }
 
-    public function store(TaskRequest $request)
+    public function store(CreateTaskRequest $request)
     {
-        $validatedData = $request->validated();
-
         $task = new Task();
+        $task->fill($request->validated());
         $task->user_id = auth()->user()->id;
-        $task->title = $validatedData['title'];
-        $task->description = $validatedData['description'];
         $task->status = 0;
         $task->save();
 
@@ -39,7 +36,7 @@ class TaskController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
 
