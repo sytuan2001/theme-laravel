@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
 use App\Http\Requests\CreateTaskRequest;
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function index()
-    {
-        $tasks = Task::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+    protected $taskService;
 
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
+    public function index(TaskService $taskService)
+    {
+        $tasks = $taskService->getTasks(auth()->id());
         return view('todos.home', compact('tasks'));
     }
+
 
     public function create()
     {
@@ -26,43 +31,21 @@ class TaskController extends Controller
 
     public function store(CreateTaskRequest $request)
     {
-        $task = new Task();
-        $task->fill($request->validated());
-        $task->user_id = auth()->user()->id;
-        $task->status = 0;
-        $task->save();
-
-        $tasks = Task::where('user_id', auth()->id())
-            ->orderByDesc('created_at')
-            ->get();
+        $this->taskService->createTask($request->validated());
 
         return redirect()->back();
     }
 
-
     public function update(Request $request, $id)
     {
-        $task = Task::findorFail($id);
-        if (!$task) {
-            return response()->json(['error' => 'Task not found']);
-        }
-        $task->title = $request->input('title');
-        $task->description = $request->input('description');
-        $task->status = $request->input('status');
-        $task->save();
+        $this->taskService->updateTask($id, $request->all());
 
-        $task = Task::find($id);
         return response()->json(['success' => 'Task updated successfully']);
     }
 
     public function destroy($id)
     {
-        $task = Task::find($id);
-        if (!$task) {
-            return response()->json(['error' => 'Task not found']);
-        }
-        $task->delete();
-
+        $this->taskService->deleteTask($id);
 
         return response()->json(['success' => 'Task deleted successfully']);
     }
@@ -70,7 +53,7 @@ class TaskController extends Controller
     public function deleteChecked(Request $request)
     {
         $ids = $request->ids;
-        Task::whereIn('id', $ids)->delete();
+        $this->taskService->deleteTasks($ids);
 
         return response()->json(['success' => "Task delete!"]);
     }
@@ -78,15 +61,7 @@ class TaskController extends Controller
     public function updateStatus(Request $request)
     {
         $taskIds = $request->input('task_id');
-        if (!empty($taskIds)) {
-            foreach ($taskIds as $taskId) {
-                $task = Task::find($taskId);
-                if ($task) {
-                    $task->status = 1;
-                    $task->save();
-                }
-            }
-        }
+        $this->taskService->updateTaskStatus($taskIds);
 
         return response()->json(['success' => 'Status updated successfully.']);
     }
