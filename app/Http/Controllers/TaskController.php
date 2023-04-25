@@ -8,11 +8,8 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    protected $taskService;
-
-    public function __construct(TaskService $taskService)
+    public function __construct(private TaskService $taskService)
     {
-        $this->taskService = $taskService;
     }
 
     public function index(TaskService $taskService)
