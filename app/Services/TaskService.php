@@ -27,7 +27,6 @@ class TaskService
         $data['status'] = 0;
         return $this->task->create($data);
     }
-
     public function updateTask($id, array $data)
     {
         $task = $this->task->findOrFail($id);

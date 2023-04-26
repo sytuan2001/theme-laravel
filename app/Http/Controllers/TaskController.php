@@ -12,6 +12,7 @@ class TaskController extends Controller
     {
     }
 
+
     public function index(TaskService $taskService)
     {
         $tasks = $taskService->getTasks(auth()->id());
