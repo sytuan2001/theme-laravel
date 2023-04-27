@@ -2,231 +2,110 @@
 
 @section('home')
 <div class="container">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <ul class="list-group">
-                <li class="list-group-item" id="addNew">Todo list</li>
-                <li class="list-group-item">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#">
-                                    <div class="checkbox">
-                                        <input type="checkbox" value="" id="chkCheckAll">
-                                    </div>
-                                </a></li>
-                            <li class="page-item"><a class="page-link" href="#" id="deleteAllSelectedRecord"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-                                    </svg></a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            <li class="page-item"><a class="page-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalCreate">+</a></li>
-                        </ul>
-                    </nav>
-                </li>
-                @foreach ($tasks as $task)
-                <li class="list-group-item ourItem" id="sid{{ $task->id }}">
-                    <div class="form-check">
-                        <input class="form-check-input task-check" type="checkbox" value="{{ $task->id }}" name="ids" @if($task->status) checked @endif>
-                        <label class="form-check-label @if($task->status) task-done @endif" for="flexCheckIndeterminate">
-                            <h5><span class="label-text @if($task->status) task-done-text @endif" data-id="{{ $task->id }}"><strong>{{ $task->title }}</strong></span>
-                                - <span class="task-description @if($task->status) task-done-text @endif">{{ Str::limit($task->description, 50) }}</span></h5>
-                        </label>
-                    </div>
-                </li>
-                @endforeach
-            </ul>
-        </div>
-    </div>
-    <!-- Modal nội dung -->
-    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="taskModalLabel">Nội Dung Chi Tiết</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Quản lý Task</h3>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createTaskModal">
+                        Tạo task mới
                     </button>
                 </div>
-                <div class="modal-body">
-                    <h5 id="taskModalTitle"></h5>
-                    <p id="taskModalDescription"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
             </div>
         </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Người tạo</th>
+                        <th>Người xử lý</th>
+                        <th>Start At</th>
+                        <th>End At</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($tasks as $task)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $task->title }}</td>
+                        <td>{{ $task->description }}</td>
+                        <td>{{ $users[$task->created_by]->name }}</td>
+                        <td>{{ $users[$task->user_id]->name }}</td>
+                        <td>{{ $task->start_at }}</td>
+                        <td>{{ $task->end_at }}</td>
+                        <td>
+                            <!-- <select onchange="updateTaskStatus(this, {{ $task->id }})">
+                                <option value="todo" {{ $task->status == 'todo' ? 'selected' : '' }}>Todo</option>
+                                <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                                <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Done</option>
+                            </select> -->
+                        </td>
+                        <td>{{ $task->created_at }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-    <!-- Modal +++ -->
-    <div class="modal fade" id="exampleModalCreate" tabindex="-1" aria-labelledby="exampleModalLabelCreate" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add new Task</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('tasks.store') }}" method="POST" id="form_create">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="addItem" class="form-label">Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title_add" name="title" placeholder="Nhập tiêu đề">
-                            <div class="invalid-feedback hidden"></div>
+</div>
 
-                        </div>
-                        <div class="mb-3">
-                            <label for="addDescription" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description_add" name="description" rows="3" placeholder="Nhập nội dung"></textarea>
-
-                            <div class="invalid-feedback hidden"></div>
-
-                        </div>
+<!-- Modal tạo task mới -->
+<div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTaskModalLabel">Tạo task mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm">
+                    @csrf
+                    <div class="form-group">
+                        <label for="title">Tiêu đề:</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="addTaskButton" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Save changes</button>
-                        {{ csrf_field() }}
+                    <div class="form-group">
+                        <label for="description">Mô tả:</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_at">Ngày bắt đầu:</label>
+                        <input type="date" class="form-control" id="start_at" name="start_at" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end_at">Ngày kết thúc:</label>
+                        <input type="date" class="form-control" id="end_at" name="end_at" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_id">Người xử lý:</label>
+                        <select class="form-control" id="user_id" name="user_id" required>
+                            <option value="">Chọn người xử lý</option>
+                            @foreach($tasks as $task)
+                            @if($user->role < $current_user->role)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
                     </div>
                 </form>
-
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" form="createTaskForm" class="btn btn-primary">Tạo</button>
             </div>
         </div>
     </div>
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
 </script>
-<script>
-    $(document).ready(function() {
-        $('#form_create').submit(function(e) {
-            e.preventDefault();
-            var that = $(this);
-            var title = $('#title_add').val();
-            var description = $('#description_add').val();
-            $('.invalid-feedback').hide();
-            $('.invalid-feedback').html('');
-            $.ajax({
-                url: that.attr('action'),
-                type: that.attr('method'),
-                dataType: "json",
-                data: that.serialize(),
-                success: function(response) {
-                    $('#exampleModalCreate').modal('hide');
-                    $('#form_create').trigger("reset");
-                    $.get('/tasks', function(data) {
-                        $('#tasksTable').html(data);
-                    });
-                },
-
-                error: function(xhr, status, error) {
-                    $.each(xhr.responseJSON.errors, function(index, value) {
-                        $('#' + index + '_add').next().html(value);
-                        $('#' + index + '_add').next().show();
-                    });
-                }
-            }).done(function() {
-                $.get('/tasks', function(data) {
-                    $('#tasksTable').html(data);
-                });
-            });
-
-        });
-    });
-</script>
-
-
-<script>
-    $(function(e) {
-        $("#chkCheckAll").click(function() {
-            $(".form-check-input").prop('checked', $(this).prop('checked'));
-        });
-        $("#deleteAllSelectedRecord").click(function(e) {
-            e.preventDefault();
-            var allIds = [];
-
-            $("input:checkbox[name=ids]:checked").each(function() {
-                allIds.push($(this).val());
-            });
-
-            $.ajax({
-                url: "{{ route('tasks.deleteSelected') }}",
-                type: "DELETE",
-                data: {
-                    _token: $("input[name=_token]").val(),
-                    ids: allIds
-                },
-                success: function(response) {
-                    $.each(allIds, function(key, val) {
-                        $("#sid" + val).remove();
-                    })
-                }
-            });
-        })
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('.task-check').on('click', function() {
-            var taskId = $(this).val();
-            var isChecked = $(this).is(':checked');
-            $.ajax({
-                url: '/tasks/update-status',
-                type: 'POST',
-                data: {
-                    '_token': '{{ csrf_token() }}',
-                    'task_id': taskId,
-                    'status': isChecked ? 1 : 0
-                },
-                success: function(data) {
-                    // Cập nhật trạng thái của Task trên giao diện
-                    var taskItem = $('#sid' + taskId);
-                    if (isChecked) {
-                        taskItem.find('.label-text').addClass('task-done-text');
-                        taskItem.find('.task-description').addClass('task-done-text');
-                    } else {
-                        taskItem.find('.label-text').removeClass('task-done-text');
-                        taskItem.find('.task-description').removeClass('task-done-text');
-                    }
-                }
-            });
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('.label-text').on('click', function() {
-            var title = $(this).text();
-            var description = $(this).siblings('.task-description').text();
-
-            $('#taskModalTitle').text(title);
-            $('#taskModalDescription').text(description);
-
-            $('#taskModal').modal('show');
-
-        });
-
-        $('.modal-footer button[data-dismiss="modal"]').on('click', function() {
-            $('#taskModal').modal('hide');
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('#addTaskButton').click(function() {
-            location.reload();
-        });
-    });
-</script>
-</div>
 @endsection
