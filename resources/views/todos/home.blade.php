@@ -9,7 +9,7 @@
                     <h3>Quản lý Task</h3>
                 </div>
                 <div class="col-md-6">
-                    <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createTaskModal">
+                    <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createTaskModal" id="add-task-btn">
                         Tạo task mới
                     </button>
                 </div>
@@ -30,22 +30,22 @@
                         <th>Ngày tạo</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tasksTableBody">
                     @foreach($tasks as $task)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
-                        <td>{{ $users[$task->created_by]->name }}</td>
-                        <td>{{ $users[$task->user_id]->name }}</td>
+                        <td>{{ $task->created_by }}</td>
+                        <td>{{ $task->user_id }}</td>
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
                         <td>
-                            <!-- <select onchange="updateTaskStatus(this, {{ $task->id }})">
+                            <select onchange="updateTaskStatus(this, {{ $task->id }})">
                                 <option value="todo" {{ $task->status == 'todo' ? 'selected' : '' }}>Todo</option>
                                 <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                                 <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Done</option>
-                            </select> -->
+                            </select>
                         </td>
                         <td>{{ $task->created_at }}</td>
                     </tr>
@@ -85,17 +85,15 @@
                         <label for="end_at">Ngày kết thúc:</label>
                         <input type="date" class="form-control" id="end_at" name="end_at" required>
                     </div>
-                    <div class="form-group">
-                        <label for="user_id">Người xử lý:</label>
-                        <select class="form-control" id="user_id" name="user_id" required>
-                            <option value="">Chọn người xử lý</option>
-                            @foreach($tasks as $task)
-                            @if($user->role < $current_user->role)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
+{{--                    <div class="form-group">--}}
+{{--                        <label for="user_id">Người xử lý:</label>--}}
+{{--                        <select class="form-control" id="user_id" name="user_id" required>--}}
+{{--                            <option value="">Chọn người xử lý</option>--}}
+{{--                            @foreach($tasks as $task)--}}
+{{--                                <option value="{{ $tasks->id }}">{{ $tasks->name }}</option>--}}
+{{--                            @endforeach--}}
+{{--                        </select>--}}
+{{--                    </div>--}}
                 </form>
             </div>
             <div class="modal-footer">
@@ -109,3 +107,46 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
 </script>
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $('#createTaskForm').submit(function(event) {
+        event.preventDefault(); // Ngăn chặn form được gửi đi
+
+        // Lấy thông tin từ form
+        var formData = $(this).serialize();
+
+        // Gửi yêu cầu tạo task bằng AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            success: function(response) {
+                // Thêm task mới vào danh sách hiển thị
+                var task = response.task;
+                var taskHtml = '<div class="card mb-3">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + task.title + '</h5>' +
+                    '<p class="card-text">' + task.description + '</p>' +
+                    '<p class="card-text"><small class="text-muted">' + task.created_by + '</small></p>' +
+                    '</div>' +
+                    '</div>';
+                $('#taskList').prepend(taskHtml);
+
+                // Đóng modal
+                $('#createTaskModal').modal('hide');
+
+                // Xóa dữ liệu trong form
+                $('#createTaskForm')[0].reset();
+                // Hiển thị thông báo thành công
+                alert('Tạo task thành công!');
+            },
+            error: function(response) {
+                alert('Có lỗi xảy ra khi tạo task.');
+            }
+        });
+    });
+</script>
+
+
+

@@ -21,12 +21,18 @@ class TaskService
             ->get();
     }
 
-    public function createTask(array $data)
+    public function createTask(array $data, int $userId)
     {
-        $data['user_id'] = auth()->id();
-        $data['status'] = 0;
-        return $this->task->create($data);
+        $data['user_id'] = $userId;
+        $data['status'] = 'todo';
+        $data['created_by'] = auth()->user()->name;
+
+        $task = new Task($data);
+        $task->save();
+
+        return $task;
     }
+
     public function updateTask($id, array $data)
     {
         $task = $this->task->findOrFail($id);

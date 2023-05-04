@@ -12,8 +12,6 @@ class TaskController extends Controller
     public function __construct(private TaskService $taskService)
     {
     }
-
-
     public function index(TaskService $taskService)
     {
         $tasks = $taskService->getTasks(auth()->id());
@@ -30,10 +28,17 @@ class TaskController extends Controller
 
     public function store(CreateTaskRequest $request)
     {
-        $this->taskService->createTask($request->validated());
+        $data = $request->validated();
+        $data['user_id'] = auth()->user()->id;
+        $data['created_by'] = auth()->user()->name;
+        $data['status'] = 'todo';
 
-        return redirect()->back();
+        $task = $this->taskService->createTask($data);
+
+        return response()->json(['success' => true, 'task' => $task]);
     }
+
+
 
     public function update(Request $request, $id)
     {
@@ -65,3 +70,4 @@ class TaskController extends Controller
         return response()->json(['success' => 'Status updated successfully.']);
     }
 }
+
