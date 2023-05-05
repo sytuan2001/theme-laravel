@@ -85,15 +85,15 @@
                         <label for="end_at">Ngày kết thúc:</label>
                         <input type="date" class="form-control" id="end_at" name="end_at" required>
                     </div>
-{{--                    <div class="form-group">--}}
-{{--                        <label for="user_id">Người xử lý:</label>--}}
-{{--                        <select class="form-control" id="user_id" name="user_id" required>--}}
-{{--                            <option value="">Chọn người xử lý</option>--}}
-{{--                            @foreach($tasks as $task)--}}
-{{--                                <option value="{{ $tasks->id }}">{{ $tasks->name }}</option>--}}
-{{--                            @endforeach--}}
-{{--                        </select>--}}
-{{--                    </div>--}}
+                    <div class="form-group">
+                        <label for="user_id">Người xử lý:</label>
+                        <select class="form-control" id="user_id" name="user_id" >
+                            <option value="">Chọn người xử lý</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

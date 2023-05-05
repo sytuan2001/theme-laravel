@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTaskRequest;
 use App\Models\Task;
+use App\Models\User;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 
@@ -21,10 +22,13 @@ class TaskController extends Controller
 
     public function create()
     {
+        $users = User::where('role_id', '<', auth()->user()->role_id)->get();
         return view('tasks.create', [
-            'task' => new Task()
+            'task' => new Task(),
+            'users' => $users
         ]);
     }
+
 
     public function store(CreateTaskRequest $request)
     {
