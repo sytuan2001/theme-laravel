@@ -69,6 +69,8 @@
             <div class="modal-body">
                 <form id="createTaskForm">
                     @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                     <div class="form-group">
                         <label for="title">Tiêu đề:</label>
                         <input type="text" class="form-control" id="title" name="title" required>
@@ -85,15 +87,15 @@
                         <label for="end_at">Ngày kết thúc:</label>
                         <input type="date" class="form-control" id="end_at" name="end_at" required>
                     </div>
-                    <div class="form-group">
-                        <label for="user_id">Người xử lý:</label>
-                        <select class="form-control" id="user_id" name="user_id" >
-                            <option value="">Chọn người xử lý</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+{{--                    <div class="form-group">--}}
+{{--                        <label for="user_id">Người xử lý:</label>--}}
+{{--                        <select class="form-control" id="user_id" name="user_id" >--}}
+{{--                            <option value="">Chọn người xử lý</option>--}}
+{{--                            @foreach($users as $user)--}}
+{{--                                <option value="{{ $user->id }}">{{ $user->name }}</option>--}}
+{{--                            @endforeach--}}
+{{--                        </select>--}}
+{{--                    </div>--}}
                 </form>
             </div>
             <div class="modal-footer">
@@ -110,42 +112,31 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $('#createTaskForm').submit(function(event) {
-        event.preventDefault(); // Ngăn chặn form được gửi đi
+    $('#createTaskBtn').click(function (event) {
+        event.preventDefault();
+        var form = $('#createTaskForm');
+        var url = form.attr('action');
 
-        // Lấy thông tin từ form
-        var formData = $(this).serialize();
-
-        // Gửi yêu cầu tạo task bằng AJAX
         $.ajax({
             type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            success: function(response) {
-                // Thêm task mới vào danh sách hiển thị
-                var task = response.task;
-                var taskHtml = '<div class="card mb-3">' +
-                    '<div class="card-body">' +
-                    '<h5 class="card-title">' + task.title + '</h5>' +
-                    '<p class="card-text">' + task.description + '</p>' +
-                    '<p class="card-text"><small class="text-muted">' + task.created_by + '</small></p>' +
-                    '</div>' +
-                    '</div>';
-                $('#taskList').prepend(taskHtml);
-
-                // Đóng modal
-                $('#createTaskModal').modal('hide');
-
-                // Xóa dữ liệu trong form
-                $('#createTaskForm')[0].reset();
-                // Hiển thị thông báo thành công
-                alert('Tạo task thành công!');
+            url: url,
+            data: form.serialize(),
+            success: function (data) {
+                if (data.success) {
+                    $('#createTaskModal').modal('hide');
+                    // Reload the page to show the new task
+                    location.reload();
+                }
             },
-            error: function(response) {
-                alert('Có lỗi xảy ra khi tạo task.');
+            error: function (xhr) {
+                var errors = xhr.responseJSON.errors;
+                $.each(errors, function (key, value) {
+                    $('#' + key + '_error').text(value[0]);
+                });
             }
         });
     });
+
 </script>
 
 

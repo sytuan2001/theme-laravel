@@ -25,7 +25,8 @@ class TaskController extends Controller
         $users = User::where('role_id', '<', auth()->user()->role_id)->get();
         return view('tasks.create', [
             'task' => new Task(),
-            'users' => $users
+            'users' => $users,
+            'userId' => auth()->user()->id
         ]);
     }
 
@@ -33,14 +34,12 @@ class TaskController extends Controller
     public function store(CreateTaskRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = auth()->user()->id;
         $data['created_by'] = auth()->user()->name;
-        $data['status'] = 'todo';
-
-        $task = $this->taskService->createTask($data);
+        $task = $this->taskService->createTask($data, auth()->user()->id);
 
         return response()->json(['success' => true, 'task' => $task]);
     }
+
 
 
 
@@ -72,6 +71,12 @@ class TaskController extends Controller
         $this->taskService->updateTaskStatus($taskIds);
 
         return response()->json(['success' => 'Status updated successfully.']);
+    }
+
+    public function edit(Task $task)
+    {
+        $users = User::where('role', '<', auth()->user()->role)->orderBy('role', 'desc')->get();
+        return view('tasks.edit', compact('task', 'users'));
     }
 }
 
