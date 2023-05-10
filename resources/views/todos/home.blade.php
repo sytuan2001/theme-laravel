@@ -67,7 +67,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="createTaskForm">
+                <form id="createTaskForm" method="POST" action="{{route('tasks.store') }}">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
@@ -87,15 +87,6 @@
                         <label for="end_at">Ngày kết thúc:</label>
                         <input type="date" class="form-control" id="end_at" name="end_at" required>
                     </div>
-{{--                    <div class="form-group">--}}
-{{--                        <label for="user_id">Người xử lý:</label>--}}
-{{--                        <select class="form-control" id="user_id" name="user_id" >--}}
-{{--                            <option value="">Chọn người xử lý</option>--}}
-{{--                            @foreach($users as $user)--}}
-{{--                                <option value="{{ $user->id }}">{{ $user->name }}</option>--}}
-{{--                            @endforeach--}}
-{{--                        </select>--}}
-{{--                    </div>--}}
                 </form>
             </div>
             <div class="modal-footer">
@@ -112,7 +103,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $('#createTaskBtn').click(function (event) {
+    $('#createTaskForm').click(function (event) {
         event.preventDefault();
         var form = $('#createTaskForm');
         var url = form.attr('action');
