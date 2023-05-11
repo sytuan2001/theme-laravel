@@ -36,7 +36,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
-                        <td>{{ $task->user->name}}</td>
+                        <td>{{ $task->user->name }}</td>
                         <td>{{ $task->user->name }}</td>
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
