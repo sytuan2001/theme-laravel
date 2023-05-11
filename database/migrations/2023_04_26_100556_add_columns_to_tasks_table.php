@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->unsignedBigInteger('created_by')->default(auth()->id());;
+            $table->unsignedBigInteger('created_by')->default(1);
             $table->dateTime('start_at')->default(now());
             $table->dateTime('end_at')->default(now());
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
