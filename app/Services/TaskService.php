@@ -23,15 +23,17 @@ class TaskService
 
     public function createTask(array $data, int $userId)
     {
+        $user = User::find($userId);
         $data['user_id'] = $userId;
         $data['status'] = 'todo';
-        $data['created_by'] = auth()->user()->name;
+        $data['created_by'] = $user->name;
 
         $task = new Task($data);
         $task->save();
 
         return $task;
     }
+
 
     public function updateTask($id, array $data)
     {

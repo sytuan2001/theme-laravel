@@ -37,7 +37,7 @@ class TaskController extends Controller
         $data['created_by'] = auth()->user()->name;
         $task = $this->taskService->createTask($data, auth()->user()->id);
 
-        return response()->json(['success' => true, 'task' => $task]);
+        return redirect('/tasks');
     }
 
 

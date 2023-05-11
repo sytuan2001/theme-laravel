@@ -27,7 +27,7 @@ class Task extends Model
     /**
      * Get the user that is assigned to the task.
      */
-    public function assignee()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
