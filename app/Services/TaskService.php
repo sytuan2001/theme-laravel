@@ -16,7 +16,7 @@ class TaskService
 
     public function getTasks($userId)
     {
-        return $this->task->where('user_id', $userId)
+        return $this->task->whereIn('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
     }

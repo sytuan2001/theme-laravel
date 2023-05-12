@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -15,8 +16,30 @@ class TaskController extends Controller
     }
     public function index(TaskService $taskService)
     {
-        $tasks = $taskService->getTasks(auth()->id());
-        return view('todos.home', compact('tasks'));
+//        $tasks = $taskService->getTasks(auth()->id());
+        $user = User::query();
+        if( Auth::user()->role == "admin"){
+            $user->whereIn('role',['leader','member']);
+        }elseif( Auth::user()->role == "leader"){
+            $user->whereIn('role',['member']);
+        }else{
+            $user->where('id',Auth::user()->id);
+        }
+        $users = $user->get();
+//        user task
+        $user_task = User::query();
+        if( Auth::user()->role == "admin"){
+            $user_task->whereIn('role',['admin','leader','member']);
+        }elseif( Auth::user()->role == "leader"){
+            $user_task->whereIn('role',['leader','member']);
+        }else{
+            $user_task->where('id',Auth::user()->id);
+        }
+        $user_task = $user_task->get()->pluck('id');
+//        dd($user_task);
+        $tasks = $taskService->getTasks($user_task);
+
+        return view('todos.home', [ 'tasks' => $tasks , 'users' => $users ]);
     }
 
 

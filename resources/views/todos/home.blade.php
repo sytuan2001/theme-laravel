@@ -91,7 +91,7 @@
                         <label for="user_id">Người xử lý:</label>
                         <select class="form-control" id="user_id" name="user_id" >
                             <option value="">Chọn người xử lý</option>
-                            @foreach($tasks as $user)
+                            @foreach($users as $user)
                                 @if($user->role_id < $task->user->name)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endif
