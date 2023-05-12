@@ -75,8 +75,13 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        $users = User::where('role', '<', auth()->user()->role)->orderBy('role', 'desc')->get();
-        return view('tasks.edit', compact('task', 'users'));
+        $users = User::where('role_id', '<', auth()->user()->role_id)->get();
+        return view('tasks.edit', [
+            'task' => $task,
+            'users' => $users,
+            'userId' => auth()->user()->id
+        ]);
     }
+
 }
 
