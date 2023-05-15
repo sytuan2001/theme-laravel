@@ -126,7 +126,6 @@
             success: function (data) {
                 if (data.success) {
                     $('#createTaskModal').modal('hide');
-                    // Reload the page to show the new task
                     location.reload();
                 }
             },

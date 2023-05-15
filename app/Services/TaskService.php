@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class TaskService
@@ -54,6 +55,15 @@ class TaskService
     public function updateTaskStatus(array $ids)
     {
         return $this->task->whereIn('id', $ids)->update(['status' => 1]);
+    }
+    public function getTasksByUserId($userId)
+    {
+        $user = User::find($userId);
+        $userRole = $user->role;
+
+        if ($userRole === 'admin') {
+            return $this->task->orderBy('created_at','desc')->get();
+        }
     }
 }
 
