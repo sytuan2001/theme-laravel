@@ -20,11 +20,29 @@ class TaskController extends Controller
 
     public function index()
     {
-        $userTasks = $this->taskService->getTasksByUserId(Auth::user()->id);
+        $user = User::query();
+        if (Auth::user()->role == "admin") {
+            $user->whereIn('role', ['leader', 'member']);
+        } elseif (Auth::user()->role == "leader") {
+            $user->whereIn('role', ['member']);
+        } else {
+            $user->where('id', Auth::user()->id);
+        }
+        $users = $user->get();
 
-        $users = User::whereIn('role', ['leader', 'member'])->get();
+        $user_task = User::query();
+        if (Auth::user()->role == "admin") {
+            $user_task->whereIn('role', ['admin', 'leader', 'member']);
+        } elseif (Auth::user()->role == "leader") {
+            $user_task->whereIn('role', ['leader', 'member']);
+        } else {
+            $user_task->where('id', Auth::user()->id);
+        }
+        $user_task = $user_task->get()->pluck('id');
+//        dd($user_task);
+        $tasks = $this->taskService->getTasks($user_task);
 
-        return view('todos.home', ['tasks' => $userTasks, 'users' => $users]);
+        return view('todos.home', ['tasks' => $tasks, 'users' => $users]);
     }
 
     public function create()
