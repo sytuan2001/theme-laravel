@@ -20,42 +20,19 @@ class TaskController extends Controller
 
     public function index()
     {
-        $users = $this->getUserQuery()->get();
-        $userTasks = $this->getUserTaskQuery()->pluck('id');
+        $userId = Auth::user()->id;
+        $tasks = $this->taskService->getTasks($userId);
+        $users = [];
 
-        $tasks = $this->taskService->getTasks($userTasks);
+        if (Auth::user()->role == 'admin') {
+            $users = User::whereIn('role', ['leader', 'member'])->get();
+        } elseif (Auth::user()->role == 'leader') {
+            $users = User::whereIn('role', ['member'])->get();
+        } else {
+            $users = User::where('id', $userId)->get();
+        }
 
         return view('todos.home', ['tasks' => $tasks, 'users' => $users]);
-    }
-
-    private function getUserQuery()
-    {
-        $user = User::query();
-
-        if (Auth::user()->role == "admin") {
-            $user->whereIn('role', ['leader', 'member']);
-        } elseif (Auth::user()->role == "leader") {
-            $user->whereIn('role', ['member']);
-        } else {
-            $user->where('id', Auth::user()->id);
-        }
-
-        return $user;
-    }
-
-    private function getUserTaskQuery()
-    {
-        $userTask = User::query();
-
-        if (Auth::user()->role == "admin") {
-            $userTask->whereIn('role', ['admin', 'leader', 'member']);
-        } elseif (Auth::user()->role == "leader") {
-            $userTask->whereIn('role', ['leader', 'member']);
-        } else {
-            $userTask->where('id', Auth::user()->id);
-        }
-
-        return $userTask;
     }
 
     public function create()

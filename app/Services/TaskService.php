@@ -16,9 +16,18 @@ class TaskService
 
     public function getTasks($userId)
     {
-        return $this->task->whereIn('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $user = Auth::user();
+        $role = $user->role;
+
+        if ($role == 'admin') {
+            return $this->task->orderBy('created_at', 'desc')->get();
+        }
+
+        if ($role == 'leader') {
+            return $this->task->whereIn('user_id', $userId)->orderBy('created_at', 'desc')->get();
+        }
+
+        return $this->task->where('user_id', $userId)->orderBy('created_at', 'desc')->get();
     }
 
     public function createTask(array $data, int $userId)
