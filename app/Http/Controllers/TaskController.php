@@ -20,7 +20,18 @@ class TaskController extends Controller
 
     public function index()
     {
+        $users = $this->getUserQuery()->get();
+        $userTasks = $this->getUserTaskQuery()->pluck('id');
+
+        $tasks = $this->taskService->getTasks($userTasks);
+
+        return view('todos.home', ['tasks' => $tasks, 'users' => $users]);
+    }
+
+    private function getUserQuery()
+    {
         $user = User::query();
+
         if (Auth::user()->role == "admin") {
             $user->whereIn('role', ['leader', 'member']);
         } elseif (Auth::user()->role == "leader") {
@@ -28,21 +39,23 @@ class TaskController extends Controller
         } else {
             $user->where('id', Auth::user()->id);
         }
-        $users = $user->get();
 
-        $user_task = User::query();
+        return $user;
+    }
+
+    private function getUserTaskQuery()
+    {
+        $userTask = User::query();
+
         if (Auth::user()->role == "admin") {
-            $user_task->whereIn('role', ['admin', 'leader', 'member']);
+            $userTask->whereIn('role', ['admin', 'leader', 'member']);
         } elseif (Auth::user()->role == "leader") {
-            $user_task->whereIn('role', ['leader', 'member']);
+            $userTask->whereIn('role', ['leader', 'member']);
         } else {
-            $user_task->where('id', Auth::user()->id);
+            $userTask->where('id', Auth::user()->id);
         }
-        $user_task = $user_task->get()->pluck('id');
-//        dd($user_task);
-        $tasks = $this->taskService->getTasks($user_task);
 
-        return view('todos.home', ['tasks' => $tasks, 'users' => $users]);
+        return $userTask;
     }
 
     public function create()
@@ -58,8 +71,8 @@ class TaskController extends Controller
     public function store(CreateTaskRequest $request)
     {
         $data = $request->validated();
-        $data['created_by'] = Auth::user()->name;
-        $task = $this->taskService->createTask($data, Auth::user()->id);
+        $data['created_by'] = Auth::user()->id;
+        $tasks = $this->taskService->createTask($data, Auth::user()->id);
 
         return redirect('/tasks');
     }

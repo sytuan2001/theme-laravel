@@ -25,7 +25,7 @@ class TaskService
     {
         $data['user_id'] = $userId;
         $data['status'] = 'todo';
-        $data['created_by'] = auth()->user()->name;
+        $data['created_by'] = auth()->user()->id;
 
         $task = new Task($data);
         $task->save();

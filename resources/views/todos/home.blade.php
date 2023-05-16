@@ -37,7 +37,7 @@
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
                         <td>{{ $task->user->name }}</td>
-                        <td>{{ $task->user->name }}</td>
+                        <td>{{ Auth::user()->name }}</td>
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
                         <td>
@@ -92,7 +92,7 @@
                         <select class="form-control" id="user_id" name="user_id" >
                             <option value="">Chọn người xử lý</option>
                             @foreach($users as $user)
-                                @if($user->role_id < $task->user->name)
+                                @if($user->role_id < $user->name)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endif
                             @endforeach
