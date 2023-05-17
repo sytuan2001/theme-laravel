@@ -20,9 +20,8 @@ class TaskController extends Controller
 
     public function index()
     {
-        $userId = Auth::user()->id;
+        $userId = [Auth::user()->id];
         $tasks = $this->taskService->getTasks($userId);
-        $users = [];
 
         if (Auth::user()->role == 'admin') {
             $users = User::whereIn('role', ['leader', 'member'])->get();

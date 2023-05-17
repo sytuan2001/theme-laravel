@@ -9,9 +9,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $title
  * @property string $description
  * @property int $status
+ * @property int $created_by
+ * @property string $start_at
+ * @property string $end_at
  */
 class Task extends Model
 {
+    const STATUS_TODO = 'todo';
+    const STATUS_IN_PROGESS = 'in_progess';
+    const STATUS_DONE = 'done';
+
     protected $fillable = [
         'user_id', 'title', 'description', 'status', 'create_by', 'start_at', 'end_at'
     ];
