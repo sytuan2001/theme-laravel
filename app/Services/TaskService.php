@@ -24,10 +24,12 @@ class TaskService
         }
 
         if ($role == 'leader') {
-            return $this->task
-                ->where(function ($query) use ($userId) {
-                    $query->where('user_id', $userId)
-                        ->orWhere('user_id', '<>', $userId);
+            return $this->task->with('creator', 'user')
+                ->whereIn('user_id', function ($query) use ($userId) {
+                    $query->select('id')
+                        ->from('users')
+                        ->where('role', 'member')
+                        ->orWhere('id', $userId);
                 })
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -37,12 +39,13 @@ class TaskService
     }
 
 
-
     public function createTask(array $data, int $userId)
     {
         $data['user_id'] = $userId;
         $data['status'] = Task::STATUS_TODO;
         $data['created_by'] = auth()->user()->id;
+        $data['start_at'] = now();
+        $data['end_at'] = now();
 
         $task = new Task($data);
         $task->save();
@@ -66,6 +69,11 @@ class TaskService
     public function deleteTasks(array $ids)
     {
         return $this->task->whereIn('id', $ids)->delete();
+    }
+
+    public function getTaskByUserID($user_id)
+    {
+        return $this->task->status('id',ids);
     }
 
     public function updateTaskStatus(array $ids)

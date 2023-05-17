@@ -89,15 +89,20 @@
                     </div>
                     <div class="form-group">
                         <label for="user_id">Người xử lý:</label>
-                        <select class="form-control" id="user_id" name="user_id" >
-                            <option value="">Chọn người xử lý</option>
-                            @foreach($users as $user)
-                                @if($user->role_id < $user->name)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endif
-                            @endforeach
+                        <select class="form-control" id="user_id" name="user_id">
+                            @if(Auth::check() && Auth::user()->role === 'member')
+                                <option value="{{ Auth::user()->id }}">Assign to me</option>
+                            @else
+                                <option value="">Chọn người xử lý</option>
+                                @foreach($users as $user)
+                                    @if($user->role_id < $user->name)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endif
+                                @endforeach
+                            @endif
                         </select>
                     </div>
+
                 </form>
             </div>
             <div class="modal-footer">
