@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     const STATUS_TODO = 'todo';
-    const STATUS_IN_PROGESS = 'in_progess';
+    const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_DONE = 'done';
 
     protected $fillable = [

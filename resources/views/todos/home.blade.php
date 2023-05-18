@@ -42,11 +42,18 @@
                         <td>{{ $task->end_at }}</td>
                         <td>
                             <select onchange="updateTaskStatus(this, {{ $task->id }})">
-                                <option value="todo" {{ $task->status == 'todo' ? 'selected' : '' }}>Todo</option>
-                                <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Done</option>
+                                <option value="{{ \App\Models\Task::STATUS_TODO }}" {{ $task->status == \App\Models\Task::STATUS_TODO ? 'selected' : '' }}>
+                                    Todo
+                                </option>
+                                <option value="{{ \App\Models\Task::STATUS_IN_PROGRESS }}" {{ $task->status == \App\Models\Task::STATUS_IN_PROGRESS ? 'selected' : '' }}>
+                                    In Progress
+                                </option>
+                                <option value="{{ \App\Models\Task::STATUS_DONE }}" {{ $task->status == \App\Models\Task::STATUS_DONE ? 'selected' : '' }}>
+                                    Done
+                                </option>
                             </select>
                         </td>
+
                         <td>{{ $task->created_at }}</td>
                     </tr>
                     @endforeach
@@ -102,7 +109,6 @@
                             @endif
                         </select>
                     </div>
-
                 </form>
             </div>
             <div class="modal-footer">

@@ -24,9 +24,9 @@ class TaskController extends Controller
         $tasks = $this->taskService->getTasks($userId);
 
         if (Auth::user()->role == 'admin') {
-            $users = User::whereIn('role', ['leader', 'member'])->get();
+            $users = User::whereIn('role', ['admin','leader', 'member'])->get();
         } elseif (Auth::user()->role == 'leader') {
-            $users = User::whereIn('role', ['member'])->get();
+            $users = User::whereIn('role', ['leader','member'])->get();
         } else {
             $users = User::where('id', $userId)->get();
         }
@@ -82,6 +82,7 @@ class TaskController extends Controller
 
         return response()->json(['success' => 'Status updated successfully.']);
     }
+
 
     public function edit(Task $task)
     {
