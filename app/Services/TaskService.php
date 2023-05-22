@@ -43,7 +43,7 @@ class TaskService
     {
         $data['user_id'] = $userId;
         $data['status'] = Task::STATUS_TODO;
-        $data['created_by'] = auth()->user()->id;
+        $data['created_by'] = Auth::user()->id;
         $data['start_at'] = now();
         $data['end_at'] = now();
 
