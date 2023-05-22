@@ -30,13 +30,12 @@ class TaskService
             $userIds = User::where('role', 'member')->pluck('id')->toArray();
             $userIds[] = $userId;
 
-            return $query->with(['creator', 'user'])
-                ->whereIn('user_id', $userIds)
-                ->orderBy('created_at', 'desc')
+            return $this->task->with(['creator', 'user'])
+                ->whereHas('user', function ($query) use ($userIds) {
+                    $query->whereIn('users.id', $userIds);
+                })
                 ->get();
         }
-
-        return $query->where('user_id', $userId)->get();
     }
 
     public function createTask(array $data, int $userId)
