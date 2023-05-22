@@ -37,7 +37,6 @@
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
                         <td>{{ $task->user->name }}</td>
-{{--                        <td>{{ $task->created_by->name }}</td>--}}
                         <td>{{ Auth::user()->name }}</td>
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
@@ -50,11 +49,10 @@
                                     In Progress
                                 </option>
                                 <option value="{{ \App\Models\Task::STATUS_DONE }}" {{ $task->status == \App\Models\Task::STATUS_DONE ? 'selected' : '' }}>
-                                    Done
+                                    Donejj
                                 </option>
                             </select>
                         </td>
-
                         <td>{{ $task->created_at }}</td>
                     </tr>
                     @endforeach
@@ -145,7 +143,6 @@
             }
         });
     });
-
 </script>
 
 
