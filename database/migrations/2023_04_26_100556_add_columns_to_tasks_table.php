@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('tasks', function (Blueprint $table) {
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->dateTime('start_at')->default(now());
-            $table->dateTime('end_at')->default(now());
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }

@@ -44,9 +44,13 @@ class TaskService
         $data['user_id'] = $userId;
         $data['status'] = Task::STATUS_TODO;
         $data['created_by'] = Auth::user()->id;
-        $data['start_at'] = now();
-        $data['end_at'] = now();
+        if (isset($_POST['start_at'])) {
+            $data['start_at'] = $_POST['start_at'];
+        }
 
+        if (isset($_POST['end_at'])) {
+            $data['end_at'] = $_POST['end_at'];
+        }
         $task = new Task($data);
         $task->save();
 

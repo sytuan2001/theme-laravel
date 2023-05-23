@@ -88,10 +88,12 @@
                     <div class="form-group">
                         <label for="start_at">Ngày bắt đầu:</label>
                         <input type="date" class="form-control" id="start_at" name="start_at" required>
+                        <span id="start_at_error" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label for="end_at">Ngày kết thúc:</label>
                         <input type="date" class="form-control" id="end_at" name="end_at" required>
+                        <span id="end_at_error" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label for="user_id">Người xử lý:</label>
@@ -124,11 +126,16 @@
         event.preventDefault();
         var form = $('#createTaskForm');
         var url = form.attr('action');
+        var startAt = $('#start_at').val();
+        var endAt = $('#end_at').val();
 
         $.ajax({
             type: 'POST',
             url: url,
-            data: form.serialize(),
+            data: {
+                start_at: startAt,
+                end_at: endAt,
+            },
             success: function (data) {
                 if (data.success) {
                     $('#createTaskModal').modal('hide');
@@ -144,6 +151,12 @@
         });
     });
 </script>
+
+<script>
+
+</script>
+
+
 
 
 

@@ -36,7 +36,7 @@ class TaskController extends Controller
 
     public function create()
     {
-        $users = User::where('role_id', '<', Auth::user()->role_id)->get();
+        $users = User::where('role', '<', Auth::user()->role)->get();
         return view('tasks.create', [
             'task' => new Task(),
             'users' => $users,
@@ -86,7 +86,7 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        $users = User::where('role_id', '<', Auth::user()->role_id)->get();
+        $users = User::where('role', '<', Auth::user()->role)->get();
         return view('tasks.edit', [
             'task' => $task,
             'users' => $users,
