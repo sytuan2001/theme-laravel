@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('status')->default('todo');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('assigned_user_id')->nullable();
+            $table->foreign('assigned_user_id')->references('id')->on('users');
         });
     }
 

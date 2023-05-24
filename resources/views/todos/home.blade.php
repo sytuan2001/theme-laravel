@@ -37,7 +37,9 @@
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
                         <td>{{ $task->user->name }}</td>
-                        <td>{{ Auth::user()->name }}</td>
+                        @if ()
+                        <td>{{ $task->user->role}}</td>
+
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
                         <td>
@@ -49,7 +51,7 @@
                                     In Progress
                                 </option>
                                 <option value="{{ \App\Models\Task::STATUS_DONE }}" {{ $task->status == \App\Models\Task::STATUS_DONE ? 'selected' : '' }}>
-                                    Donejj
+                                    Done
                                 </option>
                             </select>
                         </td>
@@ -76,7 +78,7 @@
                 <form id="createTaskForm" method="POST" action="{{route('tasks.store') }}">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                    <input type="hidden" id="assigned_user_id" name="assigned_user_id" value="">
                     <div class="form-group">
                         <label for="title">Tiêu đề:</label>
                         <input type="text" class="form-control" id="title" name="title" required>
@@ -97,14 +99,15 @@
                     </div>
                     <div class="form-group">
                         <label for="user_id">Người xử lý:</label>
-                        <select class="form-control" id="user_id" name="user_id">
-                                <option value="">Chọn người xử lý</option>
-                                @foreach($users as $user)
-                                    @if($user->role_id < $user->name)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endif
-                                @endforeach
+                        <select class="form-control" id="user_id" name="user_id" required>
+                            <option value="">Chọn người xử lý</option>
+                            @foreach($users as $user)
+                                @if($user-> role_user < $user->name)
+                                    <option value="{{ $user->id }}" data-name="{{ $user->name }}">{{ $user->name }}</option>
+                                @endif
+                            @endforeach
                         </select>
+                        <input type="hidden" id="selected_user_name" name="selected_user_name" value="">
                     </div>
                 </form>
             </div>
@@ -115,11 +118,10 @@
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
 </script>
-@endsection
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $('#createTaskForm').click(function (event) {
@@ -135,6 +137,8 @@
             data: {
                 start_at: startAt,
                 end_at: endAt,
+                selected_user_id: $('#user_id').val(),
+                _token: '{{ csrf_token() }}'
             },
             success: function (data) {
                 if (data.success) {
@@ -153,8 +157,15 @@
 </script>
 
 <script>
-
+    $(document).ready(function () {
+        $('#user_id').change(function () {
+            var selectedOption = $(this).find('option:selected');
+            var selectedUserName = selectedOption.data('name');
+            $('#selected_user_name').val(selectedUserName);
+        });
+    });
 </script>
+@endsection
 
 
 

@@ -44,6 +44,14 @@ class TaskService
         $data['user_id'] = $userId;
         $data['status'] = Task::STATUS_TODO;
         $data['created_by'] = Auth::user()->id;
+
+        $selectedUserId = $data['user_id'];
+        $selectedUser = User::find($selectedUserId);
+
+        if ($selectedUser && $selectedUser->role_id < Auth::user()->role_id) {
+            $data['user_id'] = $selectedUser->name;
+        }
+
         if (isset($_POST['start_at'])) {
             $data['start_at'] = $_POST['start_at'];
         }

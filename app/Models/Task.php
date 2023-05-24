@@ -20,7 +20,7 @@ class Task extends Model
     const STATUS_DONE = 'done';
 
     protected $fillable = [
-        'user_id', 'title', 'description', 'status', 'create_by', 'start_at', 'end_at'
+        'user_id', 'assigned_user_id', 'title', 'description', 'status', 'create_by', 'start_at', 'end_at'
     ];
 
     /**
@@ -39,8 +39,8 @@ class Task extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function role()
+    public function assigned()
     {
-        return $this->belongsTo(Role::class,'role_id');
+        return $this->belongsTo(User::class,'assigner_user_id');
     }
 }
