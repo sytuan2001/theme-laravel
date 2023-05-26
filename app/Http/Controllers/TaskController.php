@@ -47,12 +47,7 @@ class TaskController extends Controller
     public function store(CreateTaskRequest $request)
     {
         $data = $request->validated();
-        $data['created_by'] = Auth::user()->id;
-
-        $assignedUserName = User::find($data['assigned_user_id'])->name;
-        $data['assigned_user_name'] = $assignedUserName;
-
-        $tasks = $this->taskService->createTask($data, Auth::user()->id);
+        $tasks = $this->taskService->createTask($data);
 
         return redirect('/tasks');
     }

@@ -36,8 +36,8 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
+                        <td>{{ $task->creator->name ?? '' }}</td>
                         <td>{{ $task->user->name }}</td>
-                        <td>{{ $task->assigned_user_id}}</td>
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
                         <td>

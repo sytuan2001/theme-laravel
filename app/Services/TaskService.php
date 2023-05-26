@@ -33,33 +33,18 @@ class TaskService
             return $query->with(['creator', 'user'])
                 ->whereIn('user_id', $userIds)
                 ->orderBy('created_at', 'desc')
+
                 ->get();
         }
 
         return $query->where('user_id', $userId)->get();
     }
 
-    public function createTask(array $data, int $userId)
+    public function createTask(array $data)
     {
-        $data['user_id'] = $userId;
         $data['status'] = Task::STATUS_TODO;
         $data['created_by'] = Auth::user()->id;
 
-        $selectedUserId = $data['user_id'];
-        $selectedUser = User::find($selectedUserId);
-
-        if ($selectedUser && $selectedUser->role_id < Auth::user()->role_id) {
-            $data['assigned_user_id'] = $selectedUser->name;
-        }
-
-
-        if (isset($_POST['start_at'])) {
-            $data['start_at'] = $_POST['start_at'];
-        }
-
-        if (isset($_POST['end_at'])) {
-            $data['end_at'] = $_POST['end_at'];
-        }
         $task = new Task($data);
         $task->save();
 

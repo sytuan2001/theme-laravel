@@ -20,7 +20,7 @@ class Task extends Model
     const STATUS_DONE = 'done';
 
     protected $fillable = [
-        'user_id', 'assigned_user_id', 'title', 'description', 'status', 'create_by', 'start_at', 'end_at'
+        'user_id', 'assigned_user_id', 'title', 'description', 'status', 'created_by', 'start_at', 'end_at'
     ];
 
     /**
