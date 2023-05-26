@@ -37,9 +37,7 @@
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
                         <td>{{ $task->user->name }}</td>
-                        @if ()
-                        <td>{{ $task->user->role}}</td>
-
+                        <td>{{ $task->assigned_user_id}}</td>
                         <td>{{ $task->start_at }}</td>
                         <td>{{ $task->end_at }}</td>
                         <td>
@@ -107,7 +105,7 @@
                                 @endif
                             @endforeach
                         </select>
-                        <input type="hidden" id="selected_user_name" name="selected_user_name" value="">
+                        <input type="hidden" id="selected_user_name" name="selected_user_name" value="{{ $user->name }}">
                     </div>
                 </form>
             </div>
@@ -157,14 +155,14 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('#user_id').change(function () {
-            var selectedOption = $(this).find('option:selected');
-            var selectedUserName = selectedOption.data('name');
-            $('#selected_user_name').val(selectedUserName);
-        });
+    $('#user_id').on('change', function() {
+        var selectedUserId = $(this).val();
+        var selectedUserName = $("#user_id option:selected").text();
+        $('#selected_user_name').val(selectedUserName);
+        $('#assigned_user_id').val(selectedUserId);
     });
 </script>
+
 @endsection
 
 

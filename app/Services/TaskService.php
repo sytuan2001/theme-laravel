@@ -49,8 +49,9 @@ class TaskService
         $selectedUser = User::find($selectedUserId);
 
         if ($selectedUser && $selectedUser->role_id < Auth::user()->role_id) {
-            $data['user_id'] = $selectedUser->name;
+            $data['assigned_user_id'] = $selectedUser->name;
         }
+
 
         if (isset($_POST['start_at'])) {
             $data['start_at'] = $_POST['start_at'];
@@ -64,6 +65,7 @@ class TaskService
 
         return $task;
     }
+
 
     public function updateTask($id, array $data)
     {
