@@ -154,15 +154,6 @@
     });
 </script>
 
-<script>
-    $('#user_id').on('change', function() {
-        var selectedUserId = $(this).val();
-        var selectedUserName = $("#user_id option:selected").text();
-        $('#selected_user_name').val(selectedUserName);
-        $('#assigned_user_id').val(selectedUserId);
-    });
-</script>
-
 @endsection
 
 
